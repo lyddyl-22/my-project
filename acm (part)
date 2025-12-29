@@ -1,0 +1,54 @@
+#include <stdio.h>
+#include <string.h>
+
+#define MAX_N 100005
+
+long long get_mute_hours(int x) {//                  10
+    static int fib[] = { 0,1, 1, 2, 3, 5, 8, 13, 21, 34};// 9
+    if (x <9){
+        long long hours = (long long)fib[x] * 12;
+        return hours < 720 ? hours : 720;
+    }
+    else {
+        return 720;
+    }
+}
+
+int main() {
+    int n, m;
+    scanf("%d %d", &n, &m);
+
+    long long mute_time[MAX_N] = { 0 };  // 存储每个用户的禁言总时长
+    char prev_msg[105] = "";       
+    int repeat_cnt = 0;                
+
+    for (int i = 0; i < m; i++) {
+        int user_id;
+        char msg[105];//现
+        scanf("%d %s", &user_id, msg);
+
+        if (strcmp(msg, prev_msg) == 0) {
+            repeat_cnt++;
+        }
+        else {
+            strcpy(prev_msg, msg);
+            repeat_cnt = 1;
+        }
+
+        if (repeat_cnt >= 6) {
+            int x = repeat_cnt - 5;  // 违规次数
+            mute_time[user_id] += get_mute_hours(x);
+        }
+    }
+
+    for (int i = 1; i <= n; i++) {
+        if (mute_time[i] >= 720) {
+            printf("720 ");
+        }
+        else {
+            printf("%lld ", mute_time[i]);
+        }
+    }
+
+    return 0;
+}
